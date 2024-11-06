@@ -1,6 +1,7 @@
 
-
 const Login = ({ handleLogin }) => {
+    localStorage.removeItem("cart")
+    localStorage.removeItem("username")
     return (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <form onSubmit={handleLogin} className="w-[350px] mx-auto bg-[#111827] p-4 rounded-lg">

@@ -1,8 +1,10 @@
 import axios from "axios";
 
+const SERVER_API= import.meta.env.VITE_SERVER_API
+
 const fetchProducts= async (apiKey)=>{
     try {
-        const response= await axios.get(`https://api-exercise-sopi.vercel.app/api/v1/products?limit=8`, {
+        const response= await axios.get(`${SERVER_API}/products?limit=8`, {
             headers: {
                 "X-Api-Key": apiKey
             }

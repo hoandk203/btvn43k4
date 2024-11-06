@@ -3,6 +3,7 @@ import { ProductCard, Cart, Login } from './index'
 import { fetchProducts } from '../services/products-service.js'
 import {fetchApiKey} from '../services/apikey-service.js'
 import {addOrder} from "../services/order-service.js";
+import {getUser} from "../services/user-service.js";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AppContext } from '../providers/Provider'
@@ -12,18 +13,25 @@ const Shop = () => {
     const { state, dispatch } = useContext(AppContext)
     const [isLoading, setIsLoading]= useState(false)
 
+    const getUsername= async (apiKey)=>{
+        const data= await getUser(apiKey)
+        if(data.data){
+            localStorage.setItem("username", data.data.emailId.name)
+            getProducts(localStorage.getItem("apiKey"))
+        }
+    }
 
     const getProducts = async (apiKey) => {
         setIsLoading(true)
         const data = await fetchProducts(apiKey)
         if (data.data) {
             setIsLoading(false)
+            toast.success(`Chào mừng ${localStorage.getItem("username")}`)
             dispatch({ type: "products/fetch", payload: data.data.listProduct })
         } else {
             setIsLoading(false)
             toast.error("Lấy dữ liệu thất bại,  vui lòng reload")
             localStorage.removeItem("apiKey")
-            localStorage.removeItem("userEmail")
             setTimeout(() => {
                 window.location.reload()
             }, 3000);
@@ -36,9 +44,9 @@ const Shop = () => {
         const data = await fetchApiKey(email)
         if (data.data) {
             setIsLoading(false)
-            toast.success("Chào mừng")
             localStorage.setItem("apiKey", data.data.apiKey)
-            getProducts(localStorage.getItem("apiKey"))
+            getUsername(localStorage.getItem("apiKey"))
+
         } else {
             setIsLoading(false)
             toast.error("Email không được xác thực")
@@ -58,7 +66,7 @@ const Shop = () => {
     }
 
     const handleAddToCart= (currProduct)=>{
-        console.log(currProduct)
+        localStorage.setItem("cart", JSON.stringify(state.cart))
         const fakeCurrProduct= {...currProduct}
         fakeCurrProduct.totalQuantity= fakeCurrProduct.quantity
         fakeCurrProduct.quantity= 1
@@ -91,7 +99,6 @@ const Shop = () => {
 
     useEffect(()=>{
         localStorage.setItem("cart", JSON.stringify(state.cart))
-        console.log(state.products)
     }, [state.cart])
 
     const handlePayment= async ()=>{
@@ -110,8 +117,11 @@ const Shop = () => {
             dispatch({type: "cart/load", payload: []})
         }else{
             setIsLoading(false)
-            toast.error("Thanh toán không thành công, đăng nhập lại")
-            localStorage.removeItem("apiKey")
+            toast.error("Thanh toán không thành công, vui lòng reload")
+            setTimeout(()=>{
+                window.location.reload()
+                localStorage.removeItem("apiKey")
+            }, 3000)
         }
     }
 

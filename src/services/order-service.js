@@ -1,8 +1,10 @@
 import axios from "axios";
 
+const SERVER_API= import.meta.env.VITE_SERVER_API
+
 const addOrder= async (cart, apiKey)=>{
     try {
-    const response= await axios.post(`https://api-exercise-sopi.vercel.app/api/v1/orders`,cart, {
+    const response= await axios.post(`${SERVER_API}/orders`,cart, {
         headers: {
             "X-Api-Key": apiKey
         }

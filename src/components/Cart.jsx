@@ -43,8 +43,8 @@ const Cart = ({cartList}) => {
                                     {cart.price * cart.quantity}
                                 </td>
                                 <td className="px-6 py-4">
-                                    <a href="#"
-                                       className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Xóa</a>
+                                    {/*<a href="#"*/}
+                                    {/*   className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Xóa</a>*/}
                                 </td>
                             </tr>
                         })}
